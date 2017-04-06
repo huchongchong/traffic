@@ -1,4 +1,4 @@
-package com.demo.administrator.traffic;
+package com.aiseminar.platerecognizer;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

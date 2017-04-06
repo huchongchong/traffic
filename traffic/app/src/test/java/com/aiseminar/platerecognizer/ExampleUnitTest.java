@@ -1,4 +1,4 @@
-package com.demo.administrator.traffic;
+package com.aiseminar.platerecognizer;
 
 import org.junit.Test;
 

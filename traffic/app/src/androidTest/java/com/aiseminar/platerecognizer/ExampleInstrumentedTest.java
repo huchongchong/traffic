@@ -1,4 +1,4 @@
-package com.demo.administrator.traffic;
+package com.aiseminar.platerecognizer;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.demo.administrator.traffic", appContext.getPackageName());
+        assertEquals("com.aiseminar.platerecognizer", appContext.getPackageName());
     }
 }
