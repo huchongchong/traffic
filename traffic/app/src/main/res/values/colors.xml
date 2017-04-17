@@ -3,4 +3,46 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="logtext">#666</color>
+    <color name="logbtntext">#4aafea</color>
+    <color name="color_bg_status_bar">#cc0210</color>
+    <color name="color_bg_grey">#efeff4</color>
+    <color name="color_orange">#ffad1d</color>
+    <color name="color_light_blue">#30b2fe</color>
+    <color name="color_text_grey_level2">#787c80</color>
+    <color name="color_text_grey_level3">#b3b3b3</color>
+    <color name="color_text_simile_black">#666666</color>
+    <color name="color_text_on_bg_grey">#9fa0a0</color>
+    <color name="color_text_red">#fd3e39</color>
+    <color name="color_text_yellow">#fecb2f</color>
+    <color name="color_black">#000000</color>
+    <color name="color_text_contacts_alpha">#949399</color>
+    <color name="color_text_picker">#727171</color>
+    <color name="color_divider">#d7d6db</color>
+    <color name="color_white">#ffffff</color>
+    <color name="color_msg_red">#f03830</color>
+    <color name="color_green">#51f76a</color>
+    <color name="color_green2">#51d76a</color>
+    <color name="color_bg_red">#fd3e39</color>
+    <color name="color_bg_redqq">#f00039</color>
+    <color name="color_bg_node_red">#cc0310</color>
+    <color name="color_text_666">#666666</color>
+    <color name="black_overlay">#66000000</color>
+
+    <color name="detail_line_color">#ffffff</color>
+    <color name="color_dadada">#DDDDDD</color>
+    <color name="backgroundcolor_mine">#f1f3f2</color>
+    <color name="civ_border_color">#dddddd</color>
+    <color name="text_line_color">#333944</color>
+    <color name="text_username_color">#434d59</color>
+
+    <color name="text_select_color">#cc0210</color>
+
+    <color name="horizontal_divider">#8f8f8f</color>
+    <color name="horizontal_vertical">#8f8f8f</color>
+
+
+    <color name="setpass_bt_bg">#cc0210</color>
+    <color name="cursorcolor">#028ce5</color>
+
 </resources>
