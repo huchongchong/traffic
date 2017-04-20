@@ -6,7 +6,7 @@
     android:layout_height="51dp"
     android:orientation="vertical"
     android:background="@color/color_white"
-    tools:context="com.aiseminar.platerecognizer.LoginActivity">
+    tools:context="com.aiseminar.platerecognizer.activity.LoginActivity">
     <LinearLayout
         android:id="@+id/view1"
         android:layout_width="match_parent"

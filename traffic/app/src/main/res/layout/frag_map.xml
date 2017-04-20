@@ -4,14 +4,11 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aiseminar.platerecognizer.MainActivity">
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fef45f"
-    android:textSize="25dp"
-    android:text="导航"
-    android:gravity="center"
-    android:textColor="@android:color/background_dark"
-    />
+    tools:context="com.aiseminar.platerecognizer.activity.MainActivity">
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible"
+        android:clickable="true" />
 </RelativeLayout>

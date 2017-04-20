@@ -44,5 +44,6 @@
 
     <color name="setpass_bt_bg">#cc0210</color>
     <color name="cursorcolor">#028ce5</color>
+    <color name="nor">#777777</color>
 
 </resources>

@@ -2,20 +2,15 @@ package com.aiseminar.platerecognizer.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aiseminar.platerecognizer.MessageActivity;
 import com.aiseminar.platerecognizer.R;
 import com.aiseminar.platerecognizer.model.Task;
 import com.aiseminar.platerecognizer.views.ExpandableView;
@@ -49,6 +44,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         if (datas != null && datas.size() > position) {
+              if(position==0){
+                  viewHolder.typeIcon.setImageResource(R.mipmap.warn);
+              }else if(position==1){
+                  viewHolder.typeIcon.setImageResource(R.mipmap.ok);
+              }else{
+                  viewHolder.typeIcon.setImageResource(R.mipmap.arrow_l_r);
+              }
                 viewHolder.expandableView.setListener(new ExpandableView.OnViewExpandStateChangeListener() {
                     @Override
                     public void onViewExpandStateChanged(View view, boolean isExpanded) {

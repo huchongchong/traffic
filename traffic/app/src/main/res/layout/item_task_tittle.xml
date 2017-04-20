@@ -6,7 +6,7 @@
     android:layout_height="50dp"
     android:orientation="vertical"
     android:background="@color/color_text_grey_level3"
-    tools:context="com.aiseminar.platerecognizer.LoginActivity">
+    tools:context="com.aiseminar.platerecognizer.activity.LoginActivity">
     <TextView
         android:id="@+id/notice"
         android:layout_width="match_parent"

@@ -6,7 +6,7 @@
     android:layout_height="50dp"
     android:orientation="horizontal"
     android:background="@android:color/white"
-    tools:context="com.aiseminar.platerecognizer.LoginActivity">
+    tools:context="com.aiseminar.platerecognizer.activity.LoginActivity">
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"

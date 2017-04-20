@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'recognizer'
+            keyPassword '123456'
+            storeFile file('C:/Users/Administrator/Desktop/百度地图/recognizer.jks')
+            storePassword '123456'
+        }
+        release {
+            keyAlias 'recognizer'
+            keyPassword '123456'
+            storeFile file('C:/Users/Administrator/Desktop/百度地图/recognizer.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {
@@ -16,6 +30,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }
 
@@ -27,4 +47,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile files('src/main/libs/gson-2.2.4.jar')
+    compile files('src/main/libs/androidanimations.jar')
+    compile files('src/main/libs/nineoldandroids-2.4.0.jar')
+    compile files('src/main/libs/BaiduLBS_Android.jar')
 }

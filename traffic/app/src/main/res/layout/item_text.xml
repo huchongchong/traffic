@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge  xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:textSize="20sp"
+    android:gravity="center"
+    android:layout_marginLeft="20dp"
+    android:textColor="@color/civ_border_color"
+    android:text="时间"
+    />
+</merge>

@@ -6,7 +6,7 @@
     android:layout_height="71dp"
     android:orientation="vertical"
     android:background="@color/color_white"
-    tools:context="com.aiseminar.platerecognizer.LoginActivity">
+    tools:context="com.aiseminar.platerecognizer.activity.LoginActivity">
     <RelativeLayout
         android:id="@+id/view1"
         android:layout_width="match_parent"
@@ -17,9 +17,9 @@
         >
         <ImageView
             android:id="@+id/type_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@mipmap/arrow_l_r"
             android:gravity="center_vertical"
             android:layout_centerVertical="true"
             />
@@ -156,21 +156,21 @@
                 android:id="@+id/image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@mipmap/ic_launcher"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/bg_image"
                 />
             <ImageView
                 android:id="@+id/image1"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@mipmap/ic_launcher"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/bg_image"
                 />
             <ImageView
                 android:id="@+id/image2"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@mipmap/ic_launcher"
+                android:background="@drawable/bg_image"
                 />
         </LinearLayout>
     </LinearLayout>

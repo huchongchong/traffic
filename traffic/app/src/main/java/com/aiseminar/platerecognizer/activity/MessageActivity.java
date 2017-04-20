@@ -1,9 +1,11 @@
-package com.aiseminar.platerecognizer;
+package com.aiseminar.platerecognizer.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import com.aiseminar.platerecognizer.R;
 import com.aiseminar.platerecognizer.adapter.MassageAdapter;
 import com.aiseminar.platerecognizer.model.Task;
 
