@@ -141,29 +141,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         List list = new ArrayList<Task>();
         Task task = new Task();
         task.notice = new ArrayList();
-        task.notice.add("11111111111");
-        task.notice.add("22222222222");
-        task.notice.add("33333333333");
-        task.notice.add("44444444444");
+        task.notice.add("新任务新任务新任务1");
+        task.notice.add("新任务新任务新任务2");
+        task.notice.add("新任务新任务新任务3");
+        task.notice.add("新任务新任务新任务4");
         task.type = 1;
         list.add(task);
 
         Task task2 = new Task();
         task2.type = 2;
+        task2.title = "临时指派";
         list.add(task2);
         for(int i=0;i<4;i++){
             Task task3 = new Task();
             task3.type = 3;
-            task3.content = "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
+            task3.content = "北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段";
+            task3.locationDes = "北四环学院路路段北";
+            task3.time = "5月10日 12:30~13:40";
+            task3.num = (i+1)+"";
             list.add(task3);
         }
         Task task4 = new Task();
         task4.type = 2;
+        task4.title = "常规任务";
         list.add(task4);
         for(int i=0;i<4;i++){
             Task task5 = new Task();
             task5.type = 3;
-            task5.content = "qqqqqqqqqqqq";
+            task5.content = "北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段北四环学院路路段";
+            task5.locationDes = "北四环学院路路段北";
+            task5.time = "5月10日 12:30~13:40";
+            task5.num = (i+1)+"";
             list.add(task5);
         }
         taskFrag.setData(list);
@@ -175,15 +183,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         queryFrag.setData(list2);
     }
     void setAnmitor(int index){
-        if(index>curIndex){
-            mTransaction.setCustomAnimations(
-                    R.animator.fragment_slide_enter_right,
-                    R.animator.fragment_slide_exit_right);
-        }else{
-            mTransaction.setCustomAnimations(
-                    R.animator.fragment_slide_enter_left,
-                    R.animator.fragment_slide_exit_left);
-        }
+//        if(index<curIndex){
+//            mTransaction.setCustomAnimations(
+//                    R.animator.fragment_slide_enter_right,
+//                    R.animator.fragment_slide_exit_right);
+//        }else{
+//            mTransaction.setCustomAnimations(
+//                    R.animator.fragment_slide_enter_left,
+//                    R.animator.fragment_slide_exit_left);
+//        }
     }
     @Override
     public void onClick(View v) {
@@ -294,5 +302,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             break;
         }
         ((TextView)curIndexView.getChildAt(1)).setTextColor(getResources().getColor(R.color.nor));
+    }
+
+    public void swichFrag(int from, int to) {
+        mTransaction = getFragmentManager().beginTransaction();
+        setAnmitor(1);
+        mTransaction.replace(R.id.content,mapFrag).commit();
+        TvtopTitle.setText("导航");
+        changeSelect(map.getChildAt(0), (TextView) map.getChildAt(1),1);
+        curIndex = 1;
+        curIndexView = map;
     }
 }

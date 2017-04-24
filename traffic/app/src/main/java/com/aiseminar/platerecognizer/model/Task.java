@@ -11,7 +11,9 @@ public class Task {
     public String content;
     public List<String> notice;
     public String title;
-
+    public String locationDes;
+    public String time;
+    public String num;
     public int getType() {
         return type;
     }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aiseminar.platerecognizer.R;
+import com.aiseminar.platerecognizer.activity.MainActivity;
 import com.aiseminar.platerecognizer.adapter.TaskAdapter;
 import com.aiseminar.platerecognizer.model.Task;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/10.
  */
 
-public class TaskFrag extends Fragment {
+public class TaskFrag extends Fragment implements TaskAdapter.InfoClick {
     private RecyclerView recyclerView;
     private List<Task> list =new ArrayList();
     private TaskAdapter taskAdapter;
@@ -47,6 +48,7 @@ public class TaskFrag extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         taskAdapter = new TaskAdapter(list,getActivity());
+        taskAdapter.setInfoClick(this);
         recyclerView.setAdapter(taskAdapter);
     }
     public void setData(List<Task> list){
@@ -74,5 +76,10 @@ public class TaskFrag extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onInfoClick(Task task) {
+        ((MainActivity)getActivity()).swichFrag(0,1);
     }
 }

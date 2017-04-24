@@ -245,6 +245,7 @@
               />
       </LinearLayout>
       <RelativeLayout
+          android:id="@+id/warn"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
            android:layout_weight="1"
@@ -294,10 +295,11 @@
       <LinearLayout
           android:id="@+id/record"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
+          android:layout_height="match_parent"
           android:orientation="vertical"
           android:layout_gravity="center_vertical"
            android:layout_weight="1"
+          android:gravity="center_vertical"
           android:onClick="onClick"
           >
        <ImageView

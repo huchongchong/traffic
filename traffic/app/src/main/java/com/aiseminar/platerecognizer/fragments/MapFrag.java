@@ -225,11 +225,11 @@ public class MapFrag extends Fragment {
                         location.getLongitude());
                 MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
                 mBaiduMap.animateMapStatus(u);
-                    drawReact(new LatLng(location.getLatitude()+0.001,
-                            location.getLongitude()-0.001),new LatLng(location.getLatitude()+0.001,
-                            location.getLongitude()+0.001),new LatLng(location.getLatitude()-0.001,
-                            location.getLongitude()-0.001),new LatLng(location.getLatitude()-0.001,
-                            location.getLongitude()+0.001));
+                    drawReact(new LatLng(location.getLatitude()+0.002,
+                            location.getLongitude()-0.002),new LatLng(location.getLatitude()+0.002,
+                            location.getLongitude()+0.002),new LatLng(location.getLatitude()-0.002,
+                            location.getLongitude()-0.002),new LatLng(location.getLatitude()-0.002,
+                            location.getLongitude()+0.002));
                 }
                 sb.append(location.getTime());
                 sb.append("\nlocType : ");// 定位类型

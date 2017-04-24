@@ -257,9 +257,9 @@
                     android:textColor="@color/color_black"
                     />
                 <Spinner
+                    android:id="@+id/spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:entries="@array/languages"
                     android:spinnerMode="dropdown"
                     android:dropDownVerticalOffset="30dp"
                     ></Spinner>

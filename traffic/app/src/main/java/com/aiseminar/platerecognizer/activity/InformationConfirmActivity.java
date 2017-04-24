@@ -156,6 +156,14 @@ public class InformationConfirmActivity extends AppCompatActivity implements Vie
                Intent intent = new Intent(this,PrintActivity.class);
                startActivity(intent);
            break;
+           case R.id.warn:
+               Intent intent2 = new Intent(this,PrintActivity.class);
+               startActivity(intent2);
+           break;
+           case R.id.record:
+               Intent intent3 = new Intent(this,PrintActivity.class);
+               startActivity(intent3);
+           break;
        }
     }
 }

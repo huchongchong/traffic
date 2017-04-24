@@ -101,7 +101,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> im
               viewHolder.noticeTv.startAnimation(an);
           }
             if(viewHolder.type==3){
-                viewHolder.content.setText(datas.get(position).content);
+                viewHolder.content.setText("描述:"+datas.get(position).content);
+                viewHolder.num.setText(datas.get(position).num);
+                viewHolder.locationDes.setText(datas.get(position).locationDes);
+                viewHolder.time.setText("时间:"+datas.get(position).time);
+                viewHolder.botton.setOnClickListener(this);
+                viewHolder.botton.setTag(datas.get(position));
                 viewHolder.expandableView.setListener(new ExpandableView.OnViewExpandStateChangeListener() {
                     @Override
                     public void onViewExpandStateChanged(View view, boolean isExpanded) {
@@ -121,6 +126,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> im
 
                     }
                 });
+            }
+            if(getItemViewType(position)==2){
+                viewHolder.title.setText(datas.get(position).title);
             }
         }
     }
@@ -153,7 +161,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> im
 
     @Override
     public void onClick(View v) {
-
+       if(infoClick!=null&&v.getTag()!=null&&v.getTag() instanceof Task){
+           infoClick.onInfoClick((Task) v.getTag());
+       }
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
@@ -162,7 +172,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> im
         public ImageView oran;
         public LinearLayout noticeTv;
         public int type;
-        public TextView content,botton;
+        public TextView content,botton,title,num,locationDes,time;
         public ExpandableView expandableView;
         public ViewHolder(View view,int type) {
             super(view);
@@ -175,7 +185,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> im
                 oran =(ImageView) view.findViewById(R.id.oran);
                 content = (TextView)view.findViewById(R.id.content);
                 botton = (TextView)view.findViewById(R.id.botton);
+                num = (TextView)view.findViewById(R.id.num);
+                locationDes = (TextView)view.findViewById(R.id.location_des);
+                time = (TextView)view.findViewById(R.id.time);
+            }
+            if(type==2){
+                title = (TextView)view.findViewById(R.id.title);
             }
         }
+    }
+    public InfoClick infoClick;
+    public void setInfoClick(InfoClick infoClick){
+        this.infoClick = infoClick;
+    }
+    public  interface InfoClick{
+        void onInfoClick(Task task);
     }
 }
