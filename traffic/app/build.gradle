@@ -15,9 +15,6 @@ android {
             storePassword '123456'
         }
     }
-    dataBinding {
-        enabled = true
-    }
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {

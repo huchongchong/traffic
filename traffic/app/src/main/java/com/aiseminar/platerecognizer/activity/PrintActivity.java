@@ -48,7 +48,7 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
            }else if(msg.what==3){//链接并打印
                loading.animateDismiss();
                Toast.makeText(PrintActivity.this,"连接打印机成功",Toast.LENGTH_SHORT).show();
-               printText();
+               printLable();
            }else if(msg.what==4){
                loading.animateDismiss();
                Toast.makeText(PrintActivity.this,"连接打印机失败",Toast.LENGTH_SHORT).show();
@@ -57,7 +57,8 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
                    loading.animateDismiss();
                }
 //               animateDismissToast.makeText(PrintActivity.this,"连接打印机成功",Toast.LENGTH_SHORT).show();
-               printText();
+//               printText();
+               printLable();
            }
         }
     };
