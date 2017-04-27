@@ -14,6 +14,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,10 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.aiseminar.platerecognizer.EasyPR.PlateRecognizer;
+import com.aiseminar.EasyPR.PlateRecognizer;
 import com.aiseminar.platerecognizer.activity.InformationConfirmActivity;
 import com.aiseminar.platerecognizer.R;
+import com.aiseminar.platerecognizer.context.MyContext;
 import com.aiseminar.platerecognizer.util.BitmapUtil;
 import com.aiseminar.platerecognizer.util.FileUtil;
 
@@ -81,6 +84,7 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         mIvCapturePhoto = (ImageView) rootView.findViewById(R.id.ivCapturePhoto);
         mIvCapturePhoto.setOnClickListener(this);
         mIvPlateRect = (ImageView) rootView.findViewById(R.id.ivPlateRect);
+        mTvPlateResult = (TextView)rootView.findViewById(R.id.tvPlateResult);
     }
 
     @Override
@@ -171,20 +175,20 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
                 break;
             case R.id.ivCapturePhoto:
                 // 拍照,设置相关参数
-                //             Camera.Parameters params = mCamera.getParameters();
-                //       params.setPictureFormat(ImageFormat.JPEG);
-                //          DisplayMetrics metric = new DisplayMetrics();
-                //            getWindowManager().getDefaultDisplay().getMetrics(metric);
-                //            int width = metric.widthPixels;  // 屏幕宽度（像素）
-                //              int height = metric.heightPixels;  // 屏幕高度（像素）
+//                             Camera.Parameters params = mCamera.getParameters();
+//                       params.setPictureFormat(ImageFormat.JPEG);
+//                          DisplayMetrics metric = new DisplayMetrics();
+//                            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metric);
+//                            int width = metric.widthPixels;  // 屏幕宽度（像素）
+//                              int height = metric.heightPixels;  // 屏幕高度（像素）
 //                params.setPreviewSize(width, height);
-//                // 自动对焦
+                // 自动对焦
 //                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                //           mCamera.setParameters(params);
+//                           mCamera.setParameters(params);
                 try {
-//                    mCamera.takePicture(shutterCallback, null, jpgPictureCallback);
-                    Intent intent = new Intent(this.getActivity(), InformationConfirmActivity.class);
-                    this.startActivity(intent);
+                    mCamera.takePicture(shutterCallback, null, jpgPictureCallback);
+//                    Intent intent = new Intent(this.getActivity(), InformationConfirmActivity.class);
+//                    this.startActivity(intent);
                 } catch (Exception e) {
                     Log.d(TAG, e.getMessage());
                 }
@@ -197,7 +201,7 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
      * 初始化相关data
      */
     private void initData() {
-//        mPlateRecognizer = new PlateRecognizer(this.getActivity());
+        mPlateRecognizer = new PlateRecognizer(this.getActivity());
 
         // 获得句柄
         mSvHolder = mSvCamera.getHolder(); // 获得句柄
@@ -354,12 +358,12 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
                 fos.close();
                 // 更新图库
                 // 把文件插入到系统图库
-//                try {
-//                    MediaStore.Images.Media.insertImage(CameraActivity.this.getContentResolver(),
-//                            pictureFile.getAbsolutePath(), pictureFile.getName(), "Photo taked by RoadParking.");
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    MediaStore.Images.Media.insertImage(LawFrag.this.getActivity().getContentResolver(),
+                            pictureFile.getAbsolutePath(), pictureFile.getName(), "Photo taked by RoadParking.");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 // 最后通知图库更新
                 LawFrag.this.getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + pictureFile.getAbsolutePath())));
                 //Toast.makeText(CameraActivity.this, "图像已保存。", Toast.LENGTH_SHORT).show();
@@ -432,6 +436,7 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
             final int w = size.width;  //宽度
             final int h = size.height;
             final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
+            Log.e("aaaaaaaa",data.length/1024+"kb");
             // 转Bitmap
             ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
             if(! image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
@@ -440,13 +445,13 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
             byte[] tmp = os.toByteArray();
             Bitmap bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
             Bitmap rotatedBitmap = BitmapUtil.createRotateBitmap(bitmap);
-
             cropBitmapAndRecognize(rotatedBitmap);
         }
     };
 
     public void cropBitmapAndRecognize(Bitmap originalBitmap) {
         // 裁剪出关注区域
+        mTvPlateResult.setText("正在识别...");
         DisplayMetrics metric = new DisplayMetrics();
         this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metric);
         int width = metric.widthPixels;  // 屏幕宽度（像素）
@@ -477,27 +482,27 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
             LawFrag.this.getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + pictureFile.getAbsolutePath())));
 
             // 进行车牌识别
-//            String plate = mPlateRecognizer.recognize(pictureFile.getAbsolutePath());
-//            if (null != plate && ! plate.equalsIgnoreCase("0")) {
-//                mTvPlateResult.setText(plate);
-//                String[] temp = plate.split(":");
-//                if(FileUtil.isCarnumberNO(temp[1])) {
-//                    String aa = new String(temp[0]).replace("牌", "色");
-//                    MyContext.getInstance().plateColor = aa;
-//                    MyContext.getInstance().plateNum = temp[1];
-//
-//                    MyContext.CURRENT_PAGE = MyContext.PAGE_FORM;
-//                    Intent i = new Intent(this,IndexActivity.class);
+            String plate = mPlateRecognizer.recognize(pictureFile.getAbsolutePath());
+            Log.e("qqqqq",plate+"");
+            if (null != plate && ! plate.equalsIgnoreCase("0")) {
+                mTvPlateResult.setText(plate);
+                String[] temp = plate.split(":");
+                if(FileUtil.isCarnumberNO(temp[1])) {
+                    String aa = new String(temp[0]).replace("牌", "色");
+                    MyContext.getInstance().plateColor = aa;
+                    MyContext.getInstance().plateNum = temp[1];
+
+                    MyContext.CURRENT_PAGE = MyContext.PAGE_FORM;
+                    Toast.makeText(this.getActivity(),aa,Toast.LENGTH_SHORT).show();
+//                    Intent i = new Intent(this.getActivity(),InformationConfirmActivity.class);
 //                    startActivity(i);
-//                    finish();
-//
-//                }else {
-//                    mTvPlateResult.setText("请调整角度");
-//                }
-//
-//            } else {
-//                mTvPlateResult.setText("请调整角度");
-//            }
+                }else {
+                    mTvPlateResult.setText("请调整角度");
+                }
+
+            } else {
+                mTvPlateResult.setText("请调整角度");
+            }
 
         } catch (FileNotFoundException e) {
             Log.d(TAG, "File not found: " + e.getMessage());
