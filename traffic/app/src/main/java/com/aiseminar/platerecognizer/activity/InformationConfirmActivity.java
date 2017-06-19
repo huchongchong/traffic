@@ -1,10 +1,10 @@
 package com.aiseminar.platerecognizer.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.aiseminar.platerecognizer.R;
 import com.aiseminar.platerecognizer.views.ComDialog;
 import com.daimajia.androidanimations.library.Techniques;
+import com.wintone.plateid.TH_PlateIDResult;
 
 
 public class InformationConfirmActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,6 +71,14 @@ public class InformationConfirmActivity extends AppCompatActivity implements Vie
         modifyDialog = new ComDialog.Builder(this).setDialogView(R.layout.diglog_input).setStyle(R.style.ShareDialog).setEndDuration(200).setEndTechnique(Techniques.FadeOutDown).setGravity(Gravity.CENTER).setIsCancelable(false).setViewClickLinstener(R.id.ok,this).setViewClickLinstener(R.id.cancel,this).setStartDuration(200).setStartTechnique(Techniques.BounceIn).build();
         selectDialog = new ComDialog.Builder(this).setDialogView(R.layout.diglog_select).setStyle(R.style.ShareDialog).setEndDuration(200).setEndTechnique(Techniques.FadeOutDown).setGravity(Gravity.CENTER).setIsCancelable(false).setStartDuration(200).setStartTechnique(Techniques.BounceIn).build();
         selectDialogLl = (LinearLayout)selectDialog.findViewById(R.id.ll);
+        TH_PlateIDResult plate = (TH_PlateIDResult) getIntent().getSerializableExtra("data");
+        if(null==plate){
+            plate = new TH_PlateIDResult();
+        }else{
+            car_num_color.setText(plate.getColor());
+            car_num.setText(plate.getLicense());
+        }
+
     }
     void initSelectDialog(final String[] strs, final int what){
         selectDialogLl.removeAllViews();

@@ -30,6 +30,8 @@ public class PlateRecognizer {
             if (checkAndUpdateModelFile()) {
                 String s = stringFromJNI();
                 Log.e("aaaaaaaaaaaaaa",s+"");
+                Log.e("mSvmpath    ",mSvmpath);
+                Log.e("mAnnpath    ",mAnnpath);
                 mRecognizerPtr = initPR(mSvmpath, mAnnpath);
                 if (0 != mRecognizerPtr) {
                     mRecognizerInited = true;
@@ -126,7 +128,7 @@ public class PlateRecognizer {
     static {
         try {
             Log.e("EasyPR","start");
-            System.loadLibrary("EasyPR");
+            //System.loadLibrary("EasyPR");
             Log.e("EasyPR","sucess");
         } catch (UnsatisfiedLinkError ule) {
             ule.printStackTrace();

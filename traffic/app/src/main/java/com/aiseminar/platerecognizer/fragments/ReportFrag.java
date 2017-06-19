@@ -14,11 +14,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.aiseminar.platerecognizer.R;
+import com.aiseminar.platerecognizer.model.CarInfo;
 import com.aiseminar.platerecognizer.util.BitmapUtil;
+import com.aiseminar.platerecognizer.util.CarinfoDbManager;
 import com.aiseminar.platerecognizer.util.PhotosUtil;
 import com.aiseminar.platerecognizer.views.SelectPicPopupWindow;
 
 import java.io.IOException;
+import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2017/4/10.
@@ -50,6 +59,7 @@ public class ReportFrag extends Fragment implements View.OnClickListener,PhotosU
        rootView.findViewById(R.id.pic1).setOnClickListener(this);
        rootView.findViewById(R.id.pic2).setOnClickListener(this);
        rootView.findViewById(R.id.pic3).setOnClickListener(this);
+       rootView.findViewById(R.id.commit).setOnClickListener(this);
         menuWindow = new SelectPicPopupWindow(getActivity(),
                 this, "从相册选择", "拍照", "取消", null);
 
@@ -109,6 +119,7 @@ public class ReportFrag extends Fragment implements View.OnClickListener,PhotosU
                 menuWindow.dismiss();
                 break;
             case R.id.commit:
+                w2db(new CarInfo("jeidje","ded","de","1"));
                 break;
         }
     }
@@ -128,5 +139,24 @@ public class ReportFrag extends Fragment implements View.OnClickListener,PhotosU
           }
 
       }
+    }
+    public void w2db (final CarInfo info){
+        Observable.create(new Observable.OnSubscribe<CarInfo>() {
+            @Override
+            public void call(Subscriber<? super CarInfo> subscriber) {
+                CarinfoDbManager.addCarInfo(ReportFrag.this.getActivity().getApplication(),info);
+                subscriber.onNext(info);
+                List<CarInfo> list = CarinfoDbManager.queryAllCarInfo(ReportFrag.this.getActivity().getApplication());
+                Log.e("qqqq  11111",Thread.currentThread().getName()+Thread.currentThread().getId()+"list.size():  "+list.size());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<CarInfo>() {
+                    @Override
+                    public void call(CarInfo carInfo) {
+                        Log.e("qqqq  222222",Thread.currentThread().getName()+Thread.currentThread().getId());
+                    }
+                });
     }
 }

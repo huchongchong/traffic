@@ -9,33 +9,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aiseminar.platerecognizer.R;
 import com.aiseminar.platerecognizer.application.MyApplication;
-import com.aiseminar.platerecognizer.util.preDefiniation;
 import com.aiseminar.platerecognizer.views.ComDialog;
 import com.daimajia.androidanimations.library.Techniques;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class PrintActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Handler mHandler = new Handler() {
+    private  Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
            if(msg.what==1){
@@ -97,23 +90,7 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
     }
-    private void printText() {
-        context.getObject().CON_PageStart(context.getState(), false, 0, 0);
-        int alignType = 0;
-        context.getObject().ASCII_CtrlOppositeColor(context.getState(),
-                false);
-        context.getObject().ASCII_CtrlAlignType(context.getState(), 0);
-        context.getObject().ASCII_PrintString(context.getState(),
-                1,1,0,
-                 1,0, "胡崇\r崇是好\r人", "gb2312");
-        context.getObject().ASCII_CtrlFeedLines(context.getState(), 1);
-        context.getObject().ASCII_CtrlPrintCRLF(context.getState(), 1);
-        context.getObject().CON_PageEnd(context.getState(),
-                context.getPrintway());
-       // context.getObject().CPCL_PrintString(context.getState(), 250, 280, 0, 0, 0, 24, context.getString(R.string.str10), "gb2312");
-        //line
-        context.getObject().CPCL_PrintLine(context.getState(), 0, 310, 400, 310, 2);
-    }
+
     private void printLable(){
         //lable model
         /**
@@ -223,7 +200,7 @@ public class PrintActivity extends AppCompatActivity implements View.OnClickList
 //               Intent intent = new Intent(this,TakePictureActivity.class);
 //               startActivity(intent);
                if(mBconnect){
-                   printText();
+                   printLable();
                    return;
                }
                new Thread(new Runnable() {

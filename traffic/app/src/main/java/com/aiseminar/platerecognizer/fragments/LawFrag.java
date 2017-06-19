@@ -16,8 +16,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -28,12 +30,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aiseminar.EasyPR.PlateRecognizer;
-import com.aiseminar.platerecognizer.activity.InformationConfirmActivity;
 import com.aiseminar.platerecognizer.R;
+import com.aiseminar.platerecognizer.activity.InformationConfirmActivity;
 import com.aiseminar.platerecognizer.context.MyContext;
 import com.aiseminar.platerecognizer.util.BitmapUtil;
 import com.aiseminar.platerecognizer.util.FileUtil;
+import com.aiseminar.platerecognizer.views.ComDialog;
+import com.daimajia.androidanimations.library.Techniques;
+import com.wintone.plate.Package;
+import com.wintone.plateid.ConfigArgument;
+import com.wintone.plateid.PlateIDAPI;
+import com.wintone.plateid.TH_PlateIDCfg;
+import com.wintone.plateid.TH_PlateIDResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,7 +61,9 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
     ImageView mIvCapturePhoto;
 
     TextView mTvPlateResult;
-    private PlateRecognizer mPlateRecognizer;
+    private boolean skip = true;
+    private ComDialog loading;
+    private TextView mSkip;
 
     public LawFrag() {
         super();
@@ -85,6 +95,10 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         mIvCapturePhoto.setOnClickListener(this);
         mIvPlateRect = (ImageView) rootView.findViewById(R.id.ivPlateRect);
         mTvPlateResult = (TextView)rootView.findViewById(R.id.tvPlateResult);
+        mSkip = (TextView)rootView.findViewById(R.id.skip);
+        mSkip.setOnClickListener(this);
+        loading = new ComDialog.Builder(this.getActivity()).setDialogView(R.layout.loading_dialog).setStyle(R.style.ShareDialog).setEndDuration(200).setEndTechnique(Techniques.FadeOutDown).setGravity(Gravity.CENTER).setIsCancelable(false).setStartDuration(200).setStartTechnique(Techniques.BounceIn).build();
+        ((TextView)loading.findViewById(R.id.show_tv)).setText("正在识别");
     }
 
     @Override
@@ -107,12 +121,14 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
     @Override
     public void onStart() {
         super.onStart();
+        init();
         if (this.checkCameraHardware(this.getActivity()) && (mCamera == null)) {
             // 打开camera
             mCamera = getCamera();
             // 设置camera方向
             mCameraInfo = getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK);
             Camera.Parameters params = mCamera.getParameters();
+            // 自动对焦
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             mCamera.setParameters(params);
             if (null != mCameraInfo) {
@@ -131,6 +147,7 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
          * 记得释放camera，方便其他应用调用
          */
         releaseCamera();
+        PlateIDAPI.TH_UninitPlateIDSDK();
     }
     @Override
     public void onClick(View view) {
@@ -194,6 +211,10 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
                 }
 
                 break;
+            case R.id.skip:
+                Intent intent = new Intent(this.getActivity(), InformationConfirmActivity.class);
+                this.startActivity(intent);
+                break;
         }
     }
 
@@ -201,7 +222,7 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
      * 初始化相关data
      */
     private void initData() {
-        mPlateRecognizer = new PlateRecognizer(this.getActivity());
+//        mPlateRecognizer = new PlateRecognizer(this.getActivity());
 
         // 获得句柄
         mSvHolder = mSvCamera.getHolder(); // 获得句柄
@@ -341,18 +362,20 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             camera.startPreview();
-
+            Log.e("qqqqq",data.length/1024+"kb");
             File pictureFile = FileUtil.getOutputMediaFile(FileUtil.FILE_TYPE_IMAGE);
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
                 return;
             }
-//            MyContext.getInstance().path = pictureFile.getPath();
+            MyContext.getInstance().path = pictureFile.getPath();
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 // 照片转方向
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                Log.e("qqqqq",data.length/1024+"kb");
                 Bitmap normalBitmap = BitmapUtil.createRotateBitmap(bitmap);
+                Log.e("qqqqq",normalBitmap.getByteCount()/1024+"kb    normalBitmap");
 //                fos.write(data);
                 normalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.close();
@@ -432,11 +455,12 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             // 获取Preview图片转为bitmap并旋转
+            loading.show();
             Camera.Size size = mCamera.getParameters().getPreviewSize(); //获取预览大小
             final int w = size.width;  //宽度
             final int h = size.height;
             final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
-            Log.e("aaaaaaaa",data.length/1024+"kb");
+            Log.e("aaaaaaaa",data.length/1024+"kb  data");
             // 转Bitmap
             ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
             if(! image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
@@ -444,7 +468,9 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
             }
             byte[] tmp = os.toByteArray();
             Bitmap bitmap = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+            Log.e("aaaaaaaa",bitmap.getByteCount()/1024+"kb  bitmap");
             Bitmap rotatedBitmap = BitmapUtil.createRotateBitmap(bitmap);
+            Log.e("aaaaaaaa",rotatedBitmap.getByteCount()/1024+"kb rotatedBitmap");
             cropBitmapAndRecognize(rotatedBitmap);
         }
     };
@@ -457,48 +483,51 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         int width = metric.widthPixels;  // 屏幕宽度（像素）
         int height = metric.heightPixels;  // 屏幕高度（像素）
         Bitmap sizeBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
-
-        int rectWidth = (int)(mIvPlateRect.getWidth() * 1.5);
-        int rectHight = (int)(mIvPlateRect.getHeight() * 1.5);
+        Log.e("aaaaaaaa",sizeBitmap.getByteCount()/1024+"kb sizeBitmap");
+        int rectWidth = (int)(mIvPlateRect.getWidth());
+        int rectHight = (int)(mIvPlateRect.getHeight());
         int[] location = new int[2];
         mIvPlateRect.getLocationOnScreen(location);
-        location[0] -= mIvPlateRect.getWidth() * 0.5 / 2;
-        location[1] -= mIvPlateRect.getHeight() * 0.5 / 2;
-        Bitmap normalBitmap = BitmapUtil.sharpenImageAmeliorate(Bitmap.createBitmap(sizeBitmap, location[0], location[1], rectWidth, rectHight));
-
+        Log.e("x",location[0]+"");
+        Log.e("y",location[1]+"");
+//        location[0] -= mIvPlateRect.getWidth() * 0.5 / 2;
+//        location[1] -= mIvPlateRect.getHeight() * 0.5 / 2;
+        Log.e("x",location[0]+"");
+        Log.e("y",location[1]+"");
+        Log.e("w",rectWidth+"");
+        Log.e("h",rectHight+"");
+        Bitmap bitmapLL = Bitmap.createBitmap(sizeBitmap, location[0], location[1], rectWidth, rectHight);
+        Log.e("aaaaaaaa",bitmapLL.getByteCount()/1024+"kb bitmapLL");
+        Bitmap normalBitmap = BitmapUtil.sharpenImageAmeliorate(bitmapLL);
+        Log.e("aaaaaaaa",normalBitmap.getByteCount()/1024+"kb normalBitmap");
         // 保存图片并进行车牌识别
         File pictureFile = FileUtil.getOutputMediaFile(FileUtil.FILE_TYPE_PLATE);
         if (pictureFile == null) {
             Log.d(TAG, "Error creating media file, check storage permissions: ");
             return;
         }
-
+//        if(skip){
+//            Intent i = new Intent(this.getActivity(),InformationConfirmActivity.class);
+//            startActivity(i);
+//            return;
+//        }
         try {
             mTvPlateResult.setText("正在识别...");
             FileOutputStream fos = new FileOutputStream(pictureFile);
-            normalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmapLL.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
             // 最后通知图库更新
             LawFrag.this.getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + pictureFile.getAbsolutePath())));
 
             // 进行车牌识别
-            String plate = mPlateRecognizer.recognize(pictureFile.getAbsolutePath());
-            Log.e("qqqqq",plate+"");
-            if (null != plate && ! plate.equalsIgnoreCase("0")) {
-                mTvPlateResult.setText(plate);
-                String[] temp = plate.split(":");
-                if(FileUtil.isCarnumberNO(temp[1])) {
-                    String aa = new String(temp[0]).replace("牌", "色");
-                    MyContext.getInstance().plateColor = aa;
-                    MyContext.getInstance().plateNum = temp[1];
-
-                    MyContext.CURRENT_PAGE = MyContext.PAGE_FORM;
-                    Toast.makeText(this.getActivity(),aa,Toast.LENGTH_SHORT).show();
-//                    Intent i = new Intent(this.getActivity(),InformationConfirmActivity.class);
-//                    startActivity(i);
-                }else {
-                    mTvPlateResult.setText("请调整角度");
-                }
+            TH_PlateIDResult plate = this.recognizeImageFile(pictureFile.getAbsolutePath(),rectWidth, rectHight);
+            loading.animateDismiss();
+            if (null != plate && !TextUtils.isEmpty(plate.getLicense())){
+                mTvPlateResult.setText(plate.getLicense());
+                    Toast.makeText(this.getActivity(),plate.getLicense(),Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(this.getActivity(),InformationConfirmActivity.class);
+                    i.putExtra("data",plate);
+                    startActivity(i);
 
             } else {
                 mTvPlateResult.setText("请调整角度");
@@ -509,5 +538,67 @@ public class LawFrag extends Fragment implements SurfaceHolder.Callback,View.OnC
         } catch (IOException e) {
             Log.d(TAG, "Error accessing file: " + e.getMessage());
         }
+    }
+    PlateIDAPI PlateIDAPI;
+    int initResult;
+    private void init()
+    {
+        PlateIDAPI = new PlateIDAPI();
+        TH_PlateIDCfg localTH_PlateIDCfg = new TH_PlateIDCfg();
+        this.initResult = this.PlateIDAPI.TH_InitPlateIDSDK(localTH_PlateIDCfg,new Package());
+        Log.e("iiiiiiii",initResult+":>>>>>"+PlateIDAPI.TH_GetVersion());
+    }
+    /**
+     * 识别车牌图片文件
+     * @param
+     * @return 车牌颜色+车牌号码
+     */
+    private TH_PlateIDResult recognizeImageFile(String filePath,int Desired_Picture_Width,int Desired_Picture_Height) {
+
+        //Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        TH_PlateIDResult localResult = new TH_PlateIDResult();
+        int[] array1 = new int[1];
+        array1[0] = 10;
+        int[] array2 = new int[1];
+        array2[0] = -1;
+
+        File file = new File(filePath);
+        if(!file.exists()) {
+            return (null);
+        }
+
+        PlateIDAPI.TH_SetImageFormat(1, 0, 1);
+        ConfigArgument configArg = new ConfigArgument();
+        int w = PlateIDAPI.TH_SetEnabledPlateFormat(configArg.individual);
+        int w2 = PlateIDAPI.TH_SetEnabledPlateFormat(configArg.tworowyellow);
+        int w3 = PlateIDAPI.TH_SetEnabledPlateFormat(configArg.armpolice);
+        int w4 =  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.tworowarmy);
+        int w5=  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.tractor);
+        int w6 =  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.onlytworowyellow);
+        int w7 =  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.embassy);
+        int w8 =  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.onlylocation);
+        int w9 =  PlateIDAPI.TH_SetEnabledPlateFormat(configArg.armpolice2);
+        int w0 =  PlateIDAPI.TH_SetRecogThreshold(7, 5);
+        int w11 = PlateIDAPI.TH_SetContrast(9);
+        try {
+            TH_PlateIDResult[] result = PlateIDAPI.TH_RecogImage(filePath,
+                    Desired_Picture_Width, Desired_Picture_Height, localResult,
+                    array1, 0, 0, 0, 0, array2);
+            if ((result == null) || (result.length == 0)) { //识别失败
+//              file.delete();
+                return (null);
+            }
+            StringBuffer sb = new StringBuffer();
+            sb.append(result[0].toString());
+
+            //更名
+//        File newFile = new File(IDef.App_Dir+File.separatorChar+result[0].getLicense()+".jpg");
+//        file.renameTo(newFile);
+//        file.delete();
+            return result[0];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
